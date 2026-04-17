@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from typing import List, Dict, Tuple
 import math
 import re
+from collections import Counter
 
 # Create the app
 app = FastAPI(
@@ -104,4 +105,33 @@ def calculate_average_sentence_length(text: str, sentence_count: int) -> float:
 
     average_sentence_length = len(words) / sentence_count
 
-    return round(average_sentence_length, 2))
+    return round(average_sentence_length, 2)
+
+def get_most_common_words(words: List[str], n: int = 5) -> List[Tuple[str, int]]:
+    # Validation check
+    if not words:
+        return []
+
+    # Filter out words less than 3 characters
+    filtered_words = [w for w in words if len(w) >=3]
+    if not filtered_words:
+        return []
+
+    word_frequency = Counter(filtered_words)
+
+    return word_frequency.most_common(n)
+
+def count_unique_words(words: List[str]) -> int:
+    # Set helps with ignoring duplicate values
+    unique_words = set(word.lower() for word in words)
+
+    return len(unique_words)
+
+def calculate_reading_time(word_count: int, words_per_minute: int = 200) -> float:
+    # Validation check
+    if not word_count:
+        return 0
+
+    reading_time = word_count / words_per_minute
+    return round(reading_time, 2)
+
