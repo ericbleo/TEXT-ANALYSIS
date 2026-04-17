@@ -135,3 +135,41 @@ def calculate_reading_time(word_count: int, words_per_minute: int = 200) -> floa
     reading_time = word_count / words_per_minute
     return round(reading_time, 2)
 
+def sentiment_analyser(text: str) -> tuple:
+    text_lower = text.lower()
+
+    # Positive words
+    positive_words = [
+        'good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'perfect',
+        'wonderful', 'fantastic', 'best', 'beautiful', 'happy', 'joy', 'brilliant',
+        'brilliant', 'superb', 'outstanding', 'exceptional', 'favorable', 'positive'
+    ]
+
+    # Negative words
+    negative_words = [
+        'bad', 'terrible', 'awful', 'horrible', 'hate', 'worst', 'ugly',
+        'sad', 'disappointing', 'poor', 'worst', 'disgusting', 'pathetic',
+        'useless', 'unfavorable', 'negative', 'angry', 'furious'
+    ]
+
+    # Count occurences
+    positive_count = sum(1 for word in positive_words if word in text_lower)
+    negative_count = sum(1 for word in negative_words if word in text_lower)
+
+    # Determine sentiment
+    if positive_count > negative_count:
+        sentiment = "positive"
+        total_count = positive_count + negative_count
+        confidence = positive_count / total_count
+        confidence = round(confidence, 2) if total_count > 0 else 0.5
+    elif negative_count > positive_count:
+        sentiment = "negative"
+        total_count = negative_count + positive_count
+        confidence = negative_count / total_count
+        confidence = round(confidence, 2) if total_count > 0 else 0.5
+    else:
+        sentiment = "neutral"
+        confidence = 0.5
+
+    return sentiment, confidence
+
