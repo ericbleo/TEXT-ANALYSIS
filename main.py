@@ -32,6 +32,7 @@ class TextInput(BaseModel):
 class TextAnalysisResponse(BaseModel):
     word_count: int
     character_count: int
+    character_count_no_spaces: int
     sentence_count: int
     average_word_length: float
     average_sentence_length: float
@@ -41,7 +42,7 @@ class TextAnalysisResponse(BaseModel):
     sentiment: str
     sentiment_confidence: float
     readability_score: float
-    language_stats: Dict
+    language_statistics: Dict
 
 class SimpleResponse(BaseModel):
     result: float
@@ -201,3 +202,57 @@ def count_letter_types(text: str) -> tuple:
     consonant_count = sum(1 for letter in text_lower if letter not in "aeiou")
 
     return vowel_count, consonant_count
+
+def analyse_text(text: str) -> TextAnalysisResponse:
+    if not text or not text.strip():
+        raise ValueError("Text cannot be empty")
+
+    # Clean text
+    text = clean_text()
+
+    # Get basic counts
+    word_count = count_words(text)
+    char_with_spaces, char_without_spaces = count_characters(text)
+    sentence_count = count_sentences(text)
+
+    # Get words list
+    words = get_words_list(text)
+
+    # Calculate metrics
+    average_word_length = calculate_average_word_length(words)
+    average_sentence_length = calculate_average_sentence_length(text, sentence_count)
+    most_common_words = get_most_common_words(words)
+    unique_words = count_unique_words(words)
+    reading_time_minutes = calculate_reading_time(word_count)
+
+    # Sentiment analysis
+    sentiment, sentiment_confidence = sentiment_analyser(text)
+
+    # Readability
+    readability_score = estimate_reading_grade_level(word_count, sentence_count)
+
+    # Count vowels & consonants
+    vowels, consonants = count_letter_types(text)
+
+    # Language statistics
+    language_statistics = {
+        "vowels": vowels,
+        "consonants": consonants,
+        "vowel_consonant_ratio": round(vowels/consonants, 2) if consonants > 0 else 0
+    }
+
+    return TextAnalysisResponse(
+        word_count = word_count,
+        character_count = char_with_spaces,
+        character_count_no_spaces = char_without_spaces,
+        sentence_count = sentence_count,
+        average_word_length = average_word_length,
+        average_sentence_length = average_sentence_length,
+        most_common_words = most_common_words,
+        unique_words = unique_words,
+        reading_time_minutes = reading_time_minutes,
+        sentiment = sentiment,
+        sentiment_confidence = sentiment_confidence,
+        readability_score = readability_score,
+        language_statistics = language_statistics
+    )
