@@ -173,3 +173,31 @@ def sentiment_analyser(text: str) -> tuple:
 
     return sentiment, confidence
 
+def estimate_reading_grade_level(word_count: int, sentence_count: int) -> float:
+    # Validation check
+    if word_count == 0 or sentence_count == 0:
+        return 0
+
+    # How many words are in a typical sentence?
+    average_words_per_sentence = word_count / sentence_count
+
+    # DENSITY: How many sentences are in a typical word
+    average_sentences_per_word =sentence_count / word_count
+
+    # Standard formula (LOOK THIS UP PLEASE 😂)
+    score = (0.39 * average_words_per_sentence) + (11.8 * average_sentences_per_word) - 15.59
+
+    # Ensuring we dont return a negative grade
+    final_grade = max(0, score)
+    return round(final_grade, 2)
+
+def count_letter_types(text: str) -> tuple:
+    # VOWELS - these are the a,e,i,o,u
+    # CONSONANTS - all letters which are not vowels b,c,d,f
+
+    text_lower = text.lower()
+
+    vowel_count = sum(1 for letter in text_lower if letter in "aeiou")
+    consonant_count = sum(1 for letter in text_lower if letter not in "aeiou")
+
+    return vowel_count, consonant_count
