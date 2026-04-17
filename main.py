@@ -256,3 +256,11 @@ def analyse_text(text: str) -> TextAnalysisResponse:
         readability_score = readability_score,
         language_statistics = language_statistics
     )
+
+# API ENDPOINTS
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to the TEXT ANALYSIS API",
+        "docs": "Visit http://localhost:8000/docs"
+    }
