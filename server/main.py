@@ -151,14 +151,47 @@ def sentiment_analyser(text: str) -> tuple:
     positive_words = [
         'good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'perfect',
         'wonderful', 'fantastic', 'best', 'beautiful', 'happy', 'joy', 'brilliant',
-        'brilliant', 'superb', 'outstanding', 'exceptional', 'favorable', 'positive'
+        'superb', 'outstanding', 'exceptional', 'favorable', 'positive', 'pleasant',
+        'delightful', 'satisfying', 'enjoyable', 'marvelous', 'impressive', 'splendid',
+        'cheerful', 'pleasing', 'admirable', 'remarkable', 'cool', 'fabulous', 'charming',
+        'graceful', 'friendly', 'nice', 'trustworthy', 'rewarding', 'fun', 'enthusiastic',
+        'prosperous', 'radiant', 'relaxed', 'lovely', 'helpful', 'wise', 'supportive',
+        'dynamic', 'inspiring', 'accomplished', 'blissful', 'euphoric', 'lively', 'thankful',
+        'optimistic', 'progressive', 'energetic', 'motivated', 'memorable', 'genius', 'endearing',
+        'outstanding', 'proud', 'magnificent', 'positivity', 'upbeat', 'glad', 'elated', 'ecstatic',
+        'triumphant', 'appreciated', 'fortunate', 'gracious', 'cooperative', 'polite', 'priceless',
+        'spectacular', 'stellar', 'talented', 'commendable', 'valuable', 'resilient', 'clever',
+        'intelligent', 'bright', 'faithful', 'generous', 'respected', 'unbeatable', 'amused', 
+        'relatable', 'unique', 'encouraged', 'devoted', 'forgiving', 'refreshing', 'steadfast', 
+        'expert', 'engaging', 'legendary', 'enthused', 'beneficial', 'profitable', 'masterful', 
+        'illustrious', 'wonderstruck', 'vivacious', 'jubilant', 'successful', 'innovative', 'charismatic',
+        'fulfilled', 'amplified', 'celebrated', 'astounding', 'breathtaking', 'welcoming', 'warm', 
+        'precious', 'stellar', 'alluring', 'pleasurable', 'harmonious', 'motivational', 'grateful',
+        'sensational', 'funny', 'uplifting', 'resourceful', 'hopeful', 'cheery', 'forgiving', 'golden',
+        'exemplary', 'influential'
     ]
 
     # Negative words
     negative_words = [
-        'bad', 'terrible', 'awful', 'horrible', 'hate', 'worst', 'ugly',
-        'sad', 'disappointing', 'poor', 'worst', 'disgusting', 'pathetic',
-        'useless', 'unfavorable', 'negative', 'angry', 'furious'
+        'bad', 'terrible', 'awful', 'horrible', 'hate', 'worst', 'ugly', 'sad', 'disappointing', 'poor',
+        'disgusting', 'pathetic', 'useless', 'unfavorable', 'negative', 'angry', 'furious', 'dreadful',
+        'painful', 'unhappy', 'upset', 'depressing', 'annoying', 'frustrating', 'displeasing',
+        'disturbing', 'unpleasant', 'regretful', 'hateful', 'filthy', 'repulsive', 'critical', 'mean',
+        'insulting', 'disrespectful', 'offensive', 'inferior', 'problematic', 'weak', 'incompetent',
+        'overwhelming', 'disastrous', 'disgraceful', 'pessimistic', 'disheartened', 'dreary', 'hurtful',
+        'disjointed', 'worrying', 'detestable', 'lousy', 'lackluster', 'regrettable', 'painstaking',
+        'troublesome', 'hostile', 'obnoxious', 'disadvantaged', 'stressed', 'dejected', 'miserable',
+        'resentful', 'uncertain', 'unsteady', 'tense', 'jealous', 'envious', 'unsuccessful', 'bland',
+        'oppressive', 'unlucky', 'loser', 'argumentative', 'nagging', 'brutal', 'bitter', 'cold', 'unfair',
+        'vexed', 'melancholy', 'unimpressive', 'forgetful', 'neglectful', 'dismissive', 'unjust', 'hostility',
+        'sorrowful', 'artificial', 'mindless', 'malicious', 'controlling', 'resentment', 'pained', 'suffer',
+        'despair', 'intolerant', 'scared', 'depress', 'regret', 'stubborn', 'unfriendly', 'ignorant',
+        'inconsiderate', 'wasteful', 'irrational', 'rude', 'worrisome', 'fake', 'hopeless', 'insensitive',
+        'selfish', 'damaging', 'destructive', 'chaotic', 'immature', 'fearful', 'grim', 'cruel', 'shameful',
+        'mad', 'burnout', 'rotten', 'useless', 'failure', 'ruined', 'awry', 'paranoid', 'guilty', 'jealousy',
+        'condescending', 'abusive', 'sarcastic', 'hostile', 'inadequate', 'horrid', 'dreary', 'irate',
+        'catastrophic', 'resent', 'offend', 'scornful', 'flawed', 'counterproductive', 'dumb', 'panic',
+        'dissatisfied', 'hindrance', 'blocked', 'apathetic', 'weary', 'criticized', 'unapproachable'
     ]
 
     # Count occurences
