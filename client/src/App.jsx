@@ -1,6 +1,19 @@
 import { useState } from 'react'
 import './App.css'
 
+/** Emoji for API sentiment label: positive | neutral | negative */
+function sentimentEmoji(label) {
+  switch (String(label ?? '').toLowerCase()) {
+    case 'positive':
+      return '😀'
+    case 'negative':
+      return '😠'
+    case 'neutral':
+    default:
+      return '😐'
+  }
+}
+
 function App() {
   const [text, setText] = useState('')
   const [results, setResults] = useState(null)
@@ -124,6 +137,9 @@ function App() {
                     <dd className="stat-value">{results.reading_time_minutes}</dd>
                     <dt>Sentiment</dt>
                     <dd className="stat-value">
+                      <span className="sentiment-emoji" aria-hidden="true">
+                        {sentimentEmoji(results.sentiment)}
+                      </span>{' '}
                       {results.sentiment}
                       <span className="stat-sub muted">
                         {' '}

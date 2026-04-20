@@ -283,6 +283,13 @@
   font-size: 0.82rem;
 }
 
+.sentiment-emoji {
+  margin-right: 0.15em;
+  font-size: 1.15em;
+  line-height: 1;
+  vertical-align: -0.1em;
+}
+
 .word-list {
   list-style: none;
   margin: 0 0 0.5rem;
