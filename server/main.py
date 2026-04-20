@@ -203,12 +203,12 @@ def count_letter_types(text: str) -> tuple:
 
     return vowel_count, consonant_count
 
-def analyse_text(text: str) -> TextAnalysisResponse:
+def analyze_text(text: str) -> TextAnalysisResponse:
     if not text or not text.strip():
         raise ValueError("Text cannot be empty")
 
     # Clean text
-    text = clean_text()
+    text = clean_text(text)
 
     # Get basic counts
     word_count = count_words(text)
@@ -262,5 +262,133 @@ def analyse_text(text: str) -> TextAnalysisResponse:
 def home():
     return {
         "message": "Welcome to the TEXT ANALYSIS API",
-        "docs": "Visit http://localhost:8000/docs"
+        "docs": "Visit http://localhost:8000/docs",
+        "endpoints": [
+            "/analyze/ - Analyze text and get detailed statistics",
+            "/word-count/ - Count the number of words in a text",
+            "/character-count/ - Count the number of characters in a text",
+            "/sentence-count/ - Count the number of sentences in a text",
+            "/sentiment/ - Analyze the sentiment of a text",
+            "/readability/ - Estimate the readability of a text",
+        ]
     }
+
+@app.post("/analyze", response_model=TextAnalysisResponse)
+def analyze_text_endpoint(text_input: TextInput):
+    try:
+        result = analyze_text(text_input.text)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/word-count", response_model=SimpleResponse)
+def word_count_endpoint(text_input: TextInput):
+    try:
+        text = clean_text(text_input.text)
+        word_count = count_words(text)
+        return SimpleResponse(result=word_count, unit="words")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/character-count", response_model=SimpleResponse)
+def character_count_endpoint(text_input: TextInput):
+    try:
+        text = clean_text(text_input.text)
+        char_with_spaces, char_without_spaces = count_characters(text)
+        return {
+            "with_spaces": char_with_spaces,
+            "without_spaces": char_without_spaces,
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/sentence-count", response_model=SimpleResponse)
+def sentence_count_endpoint(text_input: TextInput):
+    try:
+        text = clean_text(text_input.text)
+        sentence_count = count_sentences(text)
+        return SimpleResponse(result=sentence_count, unit="sentences")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/sentiment")
+def sentiment_endpoint(text_input: TextInput):
+    try:
+        text = clean_text(text_input.text)
+        sentiment, confidence = sentiment_analyser(text)
+        return {
+            "sentiment": sentiment,
+            "confidence": confidence,
+            "message": f"The sentiment of the text is {sentiment} with a confidence of {confidence}",
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/readability")
+def readability_endpoint(text_input: TextInput):
+    try:
+        text = clean_text(text_input.text)
+        word_count = count_words(text)
+        sentence_count = count_sentences(text)
+        readability_score = estimate_reading_grade_level(word_count, sentence_count)
+        
+        # Determine difficulty level
+        if readability_score < 3:
+            difficulty = "beginner"
+        elif readability_score < 6:
+            difficulty = "medium"
+        elif readability_score < 9:
+            difficulty = "advanced"
+        else:
+            difficulty = "expert"
+        
+        return {
+            "readability_score": readability_score,
+            "difficulty": difficulty,
+            "message": f"The readability score of the text is {readability_score} and the difficulty level is {difficulty}",
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/keywords")
+def keywords_endpoint(text_input: TextInput):
+    try:
+        text = clean_text(text_input.text)
+        words = get_words_list(text)
+        most_common_words = get_most_common_words(words)
+        return {
+            "keywords": most_common_words,
+            "count": len(most_common_words),
+            "message": f"The most common words in the text are {most_common_words}",
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/summary")
+def summary_endpoint(text_input: TextInput):
+    try:
+        result = analyze_text(text_input.text)
+
+        return {
+            "summary":{
+                "words": result.word_count,
+                "characters": result.character_count,
+                "sentences": result.sentence_count,
+                "average_word_length": result.average_word_length,
+                "average_sentence_length": result.average_sentence_length,
+                "most_common_words": result.most_common_words,
+                "top_word": result.most_common_words[:1],
+                "unique_words": result.unique_words,
+                "reading_time_minutes": result.reading_time_minutes,
+                "sentiment": result.sentiment,
+                "readability_score": result.readability_score,
+                "language_statistics": result.language_statistics,
+            }
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# ERROR HANDLING
+@app.exception_handler(ValueError)
+async def value_error_handler(request, exc):
+    return HTTPException(status_code=400, detail=str(exc))
