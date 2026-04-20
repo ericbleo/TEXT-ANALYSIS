@@ -7,9 +7,9 @@
 """
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Tuple
-import math
 import re
 from collections import Counter
 
@@ -18,6 +18,14 @@ app = FastAPI(
     title="TEXT ANALYSIS API",
     description="Analyze text and get detailed statistics",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # DATA MODELS
