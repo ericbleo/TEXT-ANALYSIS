@@ -1,5 +1,5 @@
+import { useState } from 'react'
 import './App.css'
-import {useState} from 'react'
 
 function App() {
   const [text, setText] = useState('')
@@ -46,115 +46,133 @@ function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <h1>TEXT ANALYSIS APP</h1>
+        <h1 className="app-title">Text analysis</h1>
+        <p className="app-subtitle">Paste text, run analyze, review stats.</p>
       </header>
 
       <main className="app-main">
         <section className="panel panel-input" aria-label="Input area">
-          <h2>Input ✍️</h2>
-          <form onSubmit={handleAnalyze}>
-            <label htmlFor="text-input">Enter text to analyze:</label>
+          <div className="panel-head">
+            <h2 className="panel-title">Input</h2>
+            <p className="panel-desc">Enter or paste the text you want analyzed.</p>
+          </div>
+          <form className="input-form" onSubmit={handleAnalyze}>
+            <label htmlFor="text-input" className="field-label">
+              Your text
+            </label>
             <textarea
               id="text-input"
               className="text-input"
-              rows={10}
+              rows={12}
               placeholder="Paste or type your text here…"
               value={text}
               onChange={(e) => setText(e.target.value)}
               disabled={loading}
             />
             <div className="form-actions">
-              <button type="submit" disabled={loading} className='btn-primary'>
-                <b>{loading ? 'Analyzing...' : 'ANALYZE TEXT'}</b>
+              <button type="submit" disabled={loading} className="btn-primary">
+                {loading ? 'Analyzing…' : 'Analyze text'}
               </button>
             </div>
           </form>
-          <br />
           {error && (
-            <p className="form-error" role='alert' style={{color: 'red'}}>
+            <p className="form-error" role="alert">
               {error}
             </p>
           )}
         </section>
 
         <section className="panel panel-output" aria-label="Results area">
-          <h2>Results</h2>
-          {!results && !loading && !error && (
-            <p className="muted">Run an analysis to see statistics here.</p>
-          )}
-          {loading && <p className="muted">Loading…</p>}
-          {results && (
-            <div className="results-grid">
-              <dl>
-                <dt>Words</dt>
-                <dd>{results.word_count}</dd>
-                <dt>Characters (with spaces)</dt>
-                <dd>{results.character_count}</dd>
-                <dt>Characters (no spaces)</dt>
-                <dd>{results.character_count_no_spaces}</dd>
-                <dt>Sentences</dt>
-                <dd>{results.sentence_count}</dd>
-                <dt>Avg word length</dt>
-                <dd>{results.average_word_length}</dd>
-                <dt>Avg sentence length</dt>
-                <dd>{results.average_sentence_length}</dd>
-                <dt>Unique words</dt>
-                <dd>{results.unique_words}</dd>
-                <dt>Reading time (min)</dt>
-                <dd>{results.reading_time_minutes}</dd>
-                <dt>Sentiment</dt>
-                <dd>
-                  {results.sentiment}{' '}
-                  <span className="muted">
-                    ({(results.sentiment_confidence * 100).toFixed(0)}% confidence)
-                  </span>
-                </dd>
-                <dt>Readability</dt>
-                <dd>{results.readability_score}</dd>
-              </dl>
-              <div>
-                <h3>Most common words</h3>
-                {Array.isArray(results.most_common_words) &&
-                results.most_common_words.length > 0 ? (
-                  <ul className="word-list">
-                    {results.most_common_words.map((pair, i) => {
-                      const [w, c] = Array.isArray(pair) ? pair : [pair, '?']
-                      return (
-                        <li key={`${w}-${i}`}>
-                          <strong>{w}</strong> — {c}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                ) : (
-                  <p className="muted">None</p>
-                )}
-                <h3>Language statistics</h3>
-                <pre className="json-block">
-                  {JSON.stringify(results.language_statistics ?? {}, null, 2)}
-                </pre>
+          <div className="panel-head">
+            <h2 className="panel-title">Results</h2>
+            <p className="panel-desc">Statistics from the last successful run.</p>
+          </div>
+
+          <div className="panel-body">
+            {!results && !loading && (
+              <div className="empty-state">
+                <p className="empty-state-title">No results yet</p>
+                <p className="muted">Run an analysis to see word counts, sentiment, and more.</p>
               </div>
-            </div>
-          )}
+            )}
+            {loading && (
+              <div className="empty-state">
+                <p className="empty-state-title">Analyzing…</p>
+                <p className="muted">This usually takes a moment.</p>
+              </div>
+            )}
+            {results && (
+              <div className="results-grid">
+                <div className="results-col">
+                  <h3 className="results-section-title">Overview</h3>
+                  <dl className="stat-list">
+                    <dt>Words</dt>
+                    <dd className="stat-value">{results.word_count}</dd>
+                    <dt>Characters (with spaces)</dt>
+                    <dd className="stat-value">{results.character_count}</dd>
+                    <dt>Characters (no spaces)</dt>
+                    <dd className="stat-value">{results.character_count_no_spaces}</dd>
+                    <dt>Sentences</dt>
+                    <dd className="stat-value">{results.sentence_count}</dd>
+                    <dt>Avg word length</dt>
+                    <dd className="stat-value">{results.average_word_length}</dd>
+                    <dt>Avg sentence length</dt>
+                    <dd className="stat-value">{results.average_sentence_length}</dd>
+                    <dt>Unique words</dt>
+                    <dd className="stat-value">{results.unique_words}</dd>
+                    <dt>Reading time (min)</dt>
+                    <dd className="stat-value">{results.reading_time_minutes}</dd>
+                    <dt>Sentiment</dt>
+                    <dd className="stat-value">
+                      {results.sentiment}
+                      <span className="stat-sub muted">
+                        {' '}
+                        ({(results.sentiment_confidence * 100).toFixed(0)}% confidence)
+                      </span>
+                    </dd>
+                    <dt>Readability</dt>
+                    <dd className="stat-value">{results.readability_score}</dd>
+                  </dl>
+                </div>
+                <div className="results-col">
+                  <h3 className="results-section-title">Most common words</h3>
+                  {Array.isArray(results.most_common_words) &&
+                  results.most_common_words.length > 0 ? (
+                    <ul className="word-list">
+                      {results.most_common_words.map((pair, i) => {
+                        const [w, c] = Array.isArray(pair) ? pair : [pair, '?']
+                        return (
+                          <li key={`${w}-${i}`}>
+                            <span className="word-term">{w}</span>
+                            <span className="word-count">{c}</span>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="muted">None</p>
+                  )}
+                  <h3 className="results-section-title results-section-title--spaced">
+                    Language statistics
+                  </h3>
+                  <pre className="json-block">
+                    {JSON.stringify(results.language_statistics ?? {}, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            )}
+          </div>
         </section>
       </main>
 
       <footer className="app-footer">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.25em' }}>
+        <div className="footer-social">
           <a
             href="https://tiktok.com/@ericbleo"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="TikTok"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0.5em',
-              borderRadius: '50%',
-              background: '#000',
-              boxShadow: '0 1px 8px 1px rgba(0,0,0,0.08)',
-            }}
+            className="footer-social-link footer-social-link--tiktok"
           >
             {/* TikTok SVG icon */}
             <svg width="28" height="28" viewBox="0 0 448 512" fill="white" aria-hidden="true">
@@ -168,15 +186,7 @@ function App() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0.5em',
-              borderRadius: '50%',
-              background: 'radial-gradient(circle at 30% 110%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)',
-              boxShadow: '0 1px 8px 1px rgba(0,0,0,0.08)',
-            }}
+            className="footer-social-link footer-social-link--instagram"
           >
             {/* Instagram SVG icon */}
             <svg width="28" height="28" viewBox="0 0 448 512" fill="white" aria-hidden="true">
